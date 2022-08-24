@@ -1,0 +1,21 @@
+// FONTS
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+* {
+    font-family: 'Lato'
+}
+
+// RESET
+@import './reset.scss';
+
+// STYLES
+@import './mixins.scss';
+@import './login.scss';
+@import './home.scss';
+@import './profil.scss';
+
+
+
+
+html, body {
+    min-width: max-content;
+}

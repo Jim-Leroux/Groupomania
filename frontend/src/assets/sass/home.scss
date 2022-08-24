@@ -1,0 +1,202 @@
+.container {
+    margin-top: 1rem;
+    flex-direction: column;
+    @include flex-justify-align-center;
+    .post-form {
+        width: 15rem;
+        padding: 1rem;
+        display: flex;
+        border-radius: 10px;
+        flex-direction: column;
+        box-shadow: 0px 0px 10px 3px rgb(194, 194, 194);
+
+        .block-post-field {
+            padding: 1rem;
+            display: flex;
+        }
+
+        .img-preview {
+            padding: 1rem;
+            @include flex-justify-align-center;
+        }
+
+        .import-file {
+            @extend .block-post-field;
+            justify-content: space-between;
+            align-items: center;
+            .input-file {
+                display: none;
+            }
+            i {
+                margin-left: 0.5rem;
+                font-size: 2rem;
+                cursor: pointer;
+            }
+        }
+    }
+
+    img {
+        max-height: 500px;
+        width: 10rem;
+    }
+
+    .img-profil {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 200%;
+        box-shadow: 0px 0px 10px 3px rgb(194, 194, 194);
+        object-fit: cover;
+        cursor: pointer;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 20px 20px;
+        border: 1px solid rgb(217, 217, 217);
+        font-size: 1rem;
+    }
+
+    button {
+        width: 70%;
+        padding: 0.9rem;
+        border-radius: 20px 20px;
+        box-shadow: 0px 0px 10px 3px rgb(194, 194, 194);
+        color: #fff;
+        background-color: #dc3545;
+        border: none;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+    
+    .button--disabled {
+        pointer-events: none;
+        background-color: #E36881;
+    }
+
+    .post-card {
+        padding: 1rem;
+        margin-top: 3rem;
+        height: auto;
+        width: 15rem;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px 3px rgb(194, 194, 194);
+        display: flex;
+        flex-direction: column;
+        .user-data {
+            @include flex-justify-align-center;
+            justify-content: space-between;
+            div {
+                display: flex;
+                align-items: center;
+                i {
+                    @extend div;
+                }
+                p {
+                    margin-left: 1rem;
+                }
+            }
+            .post-options {
+                font-size: 1.5rem;
+                margin-right: 0.5rem;
+                cursor: pointer;
+            }
+        }
+        .post-msg {
+            margin-left: 2rem;
+            padding: 1rem;
+        }
+        .post-data {
+            @include flex-justify-align-center;
+            flex-direction: column;
+            padding: 1rem;
+            .post-img {
+                border-radius: 20px;
+                width: 90%;
+            }
+        }
+        
+        .like-comment {
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            i {
+                font-size: 1.5rem;
+                padding-right: 1rem;
+                cursor: pointer;
+            }
+            .show-comment-btn {
+                cursor: pointer;
+            }
+        }
+        .comment-section {
+            .comment-description {
+                display: flex;
+                align-items: center;
+                p {
+                    margin-left: 1rem;
+                }
+            }
+            .comment-text {
+                margin-left: 3.5rem;
+                color: #404040;
+            }
+            .comment-user-img {
+                width: 2.5rem;
+                border-radius: 200%;
+                box-shadow: 0px 0px 10px 3px rgb(194, 194, 194);
+            }
+            .comment-options {
+                display: flex;
+                i {
+                cursor: pointer;
+                }
+            }
+            
+        }
+        .post-comment {
+            padding-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            i {
+                font-size: 2rem;
+            }
+            input {
+                margin-top: 1rem;
+                width: 90%;
+            }
+            button {
+                margin-top: 1rem;
+                width: 90%;
+            }
+        }
+    }
+
+    @media only screen and (min-width: 600px) {
+        .post-form {
+            width: 35rem;
+            button {
+                margin: 0 !important;
+                width: 10rem !important;
+            }
+        }
+        .post-card {
+            width: 35rem;
+        }
+        .post-comment {
+            flex-direction: row !important;
+            justify-content: space-evenly !important;
+            input {
+                margin: 0 !important;
+                width: 20rem !important;
+            }
+            button {
+                margin: 0 !important;
+                width: 7rem !important;
+            }
+        }
+    }
+
+}

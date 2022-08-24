@@ -1,0 +1,288 @@
+<template>
+    <Navbar />
+    <div class="container">
+        <!-- ----------------- PUBLICATION POSTS ----------------- -->
+        <div class="post-form">
+            <div v-if="url" class="img-preview">
+                <img :src="url" />
+            </div>
+            <div class="block-post-field">
+                <input v-model="description" class="post-field" type="text" placeholder="Comment allez vous ?">
+            </div>
+
+            <div class="import-file">
+                <label for="file" class="label-file"><i class="fa-solid fa-image"></i></label>
+                <input @change="onFileChange" id="file" class="input-file" type="file">
+                <button @click="createPost()" :class="{ 'button--disabled': !validatedFields }">Publier</button>
+            </div>
+        </div>
+        <div>{{ VUE_APP_ADMIN_ACCESS }}</div>
+        <!-- ----------------- AFFICHAGE POSTS ----------------- -->
+        <div v-for="post in posts" :key="post.id" class="post-card">
+            <div v-if="post.User" class="user-data">
+                <div>
+                    <img class="img-profil" :src="post.User.imageUrl" />
+                    <p class="user-name">{{ post.User.firstname }} {{ post.User.name }}</p>
+                </div>
+
+                <!-- ----------------- POST OPTIONS ----------------- -->
+                <div v-if="post.user_id == user.id && mode != 'update'" class="post-options">
+                    <p @click="updateMode(post.id)"><i class="fa-solid fa-pen-to-square"></i></p>
+                    <p @click="deletePost(Object.values(post))"><i class="fa-solid fa-trash"></i></p>
+                </div>
+                <div v-if="post.user_id != user.id && mode != 'update' && user.email == 'admin@gmail.com'"
+                    class="post-options">
+                    <p @click="deletePost(Object.values(post))"><i class="fa-solid fa-trash"></i></p>
+                </div>
+            </div>
+
+            <p class="post-msg">{{ post.description }}</p>
+
+            <div class="post-data">
+                <img class="post-img" v-if="post.imageUrl" :src="post.imageUrl" alt="post-img">
+            </div>
+
+            <!-- ----------------- COMMENTAIRE & LIKE ----------------- -->
+            <div v-if="mode != 'comment'" class="like-comment">
+                <p @click="likeDislike(post.id)"><i class="fa-solid fa-heart"></i></p>
+                <p @click="swichToComment(post.id)" class="show-comment-btn">Commenter</p>
+            </div>
+
+            <!-- ----------------- MODIFICATION POST ----------------- -->
+            <div v-if="mode == 'update' && post.id == postId" class="post-comment">
+                <p @click="switchToNull()"><i class="fa-regular fa-circle-xmark"></i></p>
+                <input v-model="description" class="comment-content" type="text" placeholder="Modifier la description">
+                <button @click="updatePost(Object.values(post))" class="send-comment">Modifier</button>
+            </div>
+
+            <!-- ----------------- AFFICHAGE COMMENTAIRE ----------------- -->
+            <div v-if="mode == 'comment' && post.id == postId" v-for="comment in post.Comments" :key="post.Comments.id"
+                class="comment-section">
+                <div v-if="comment" class="comment-description">
+                    <img :src="comment.User.imageUrl" alt="img-profil" class="comment-user-img">
+                    <div>
+                        <p>{{ comment.User.firstname }} {{ comment.User.name }}</p>
+                    </div>
+
+                    <!-- ----------------- COMMENTAIRE OPTIONS ----------------- -->
+                    <div v-if="post.user_id == user.id && commentMode != 'commentUpdate'" class="comment-options">
+                        <p @click="swichToUpdateComment(comment.id)"><i class="fa-solid fa-pen-to-square"></i></p>
+                        <p @click="deleteComment(comment.id)"><i class="fa-solid fa-trash"></i></p>
+                    </div>
+                    <div v-if="post.user_id != user.id && commentMode != 'commentUpdate' && user.email == 'admin@gmail.com'"
+                        class="comment-options">
+                        <p @click="deleteComment(comment.id)"><i class="fa-solid fa-trash"></i></p>
+                    </div>
+                </div>
+                <p class="comment-text">{{ comment.description }}</p>
+
+                <!-- ----------------- MODIFICATION COMMMENTAIRE ----------------- -->
+                <div class="post-comment">
+                    <p v-if="commentMode == 'commentUpdate' && commentId == comment.id" @click="switchToNull()"><i
+                            class="fa-regular fa-circle-xmark"></i></p>
+                    <input v-if="commentMode == 'commentUpdate' && commentId == comment.id"
+                        v-model="comment_description" class="comment-content" type="text" placeholder="Modifier..">
+                    <button v-if="commentMode == 'commentUpdate' && commentId == comment.id"
+                        @click="updateComment(comment.id)" class="send-comment">Modifier</button>
+                </div>
+
+            </div>
+
+            <!-- ----------------- PUBLICATION COMMENTAIRE ----------------- -->
+            <div v-if="mode == 'comment' && post.id == postId" class="post-comment">
+                <p v-if="commentMode != 'commentUpdate'" @click="switchToNull()"><i
+                        class="fa-regular fa-circle-xmark"></i></p>
+                <input v-if="commentMode != 'commentUpdate'" v-model="comment_description" class="comment-content"
+                    type="text" placeholder="Commenter..">
+                <button v-if="commentMode != 'commentUpdate'" @click="createComment(Object.values(post))"
+                    class="send-comment">Envoyer</button>
+
+
+            </div>
+        </div>
+    </div>
+
+</template>
+
+<script>
+import { mapState } from 'vuex';
+
+import Navbar from "@/components/Navbar.vue"
+
+export default {
+    name: "Home",
+    data() {
+        return {
+            mode: "",
+            postId: "",
+            commentMode: "",
+            commentId: "",
+            url: null,
+            description: "",
+            imageUrl: "",
+            comment_description: "",
+            VUE_APP_ADMIN_ACCESS: process.env.VUE_APP_ADMIN_ACCESS
+        }
+    },
+    mounted: function () {
+        // console.log(this.posts.User);
+
+        // REDIRECTION AU FORMULAIRE DE CONNEXION
+        if (this.$store.state.user.userId == -1) {
+            this.$router.push("/");
+            return;
+        }
+        this.$store.dispatch("getPosts");
+        this.$store.dispatch("getUserInfos");
+
+        console.log(this.VUE_APP_ADMIN_ACCESS);
+    },
+    computed: {
+        ...mapState({
+            user: "userInfos",
+            posts: 'postDatas',
+
+        }),
+        validatedFields() {
+            if (this.description != "") {
+                return true;
+            } else {
+                return false;
+            }
+        },
+    },
+    methods: {
+        onFileChange(e) {
+            const file = e.target.files[0];
+            this.url = URL.createObjectURL(file);
+        },
+        createPost: function () {
+            // let formData = new FormData();
+            // formData.append("user_firstname", this.firstname)
+            // formData.append("user_name", this.name)
+            // formData.append("user_email", this.email)
+            // formData.append("user_password", this.password)
+            // formData.append("user_picture", this.imageUrl)
+
+            // console.log(formData);
+
+            let newPost = {
+                description: this.description,
+                imageUrl: this.imageUrl,
+            }
+
+            // console.log(newUser);
+
+            this.$store.dispatch('createPost', newPost).then((response) => {
+                console.log("Post Created");
+                this.$router.go("/home");
+            }), (error) => {
+                console.log("error");
+                console.log(error);
+            }
+        },
+        updateMode: function (post_id) {
+            this.postId = post_id;
+            this.mode = "update";
+        },
+        swichToComment: function (post_id) {
+            this.postId = post_id;
+            this.mode = "comment";
+        },
+        swichToUpdateComment: function (comment_id) {
+            this.commentId = comment_id;
+            this.commentMode = "commentUpdate";
+        },
+        switchToNull: function () {
+            this.mode = "";
+            this.commentMode = "";
+        },
+        updatePost: function (value) {
+            const selectedPost = value[0] // récuparation de l'id du post
+
+            let updatedPost = {
+                selectedPost,
+                description: this.description,
+            }
+
+            this.$store.dispatch('updatePost', updatedPost).then((response) => {
+                console.log("Post Updated");
+                this.$router.go("/home");
+            }), (error) => {
+                console.log("error");
+                console.log(error);
+            }
+
+        },
+        deletePost: function (value) {
+            const selectedPost = value[0] // récuparation de l'id du post
+
+            this.$store.dispatch('deletePost', selectedPost).then((response) => {
+                console.log("Post Deleted");
+                this.$router.go("/home");
+            }), (error) => {
+                console.log("error");
+                console.log(error);
+            }
+        },
+        createComment: function (value) {
+            const selectedPost = value[0] // récuparation de l'id du post
+
+            let newComment = {
+                selectedPost,
+                description: this.comment_description,
+            }
+
+            this.$store.dispatch('createComment', newComment).then((response) => {
+                console.log("Comment Created");
+                this.$router.go("/home");
+            }), (error) => {
+                console.log("error");
+                console.log(error);
+            }
+
+        },
+        updateComment: function (comment_id) {
+            const selectedComment = comment_id // récuparation de l'id du comment
+
+            let updatedComment = {
+                selectedComment,
+                description: this.comment_description,
+            }
+
+            this.$store.dispatch('updateComment', updatedComment).then((response) => {
+                console.log("Comment Updated");
+                this.$router.go("/home");
+            }), (error) => {
+                console.log("error");
+                console.log(error);
+            }
+        },
+        deleteComment: function (comment_id) {
+            const selectedComment = comment_id // récuparation de l'id du comment
+
+            this.$store.dispatch('deleteComment', selectedComment).then((response) => {
+                console.log("Comment Deleted");
+                this.$router.go("/home");
+            }), (error) => {
+                console.log("error");
+                console.log(error);
+            }
+        },
+        likeDislike: function (post_id) {
+            const selectedPost = post_id // récuparation de l'id du post
+
+            this.$store.dispatch('likeDislike', selectedPost).then((response) => {
+                // this.$router.go("/home");
+            }), (error) => {
+                console.log("error");
+                console.log(error);
+            }
+        },
+    },
+    components: { Navbar }
+}
+</script>
+
+<style scoped>
+</style> 
