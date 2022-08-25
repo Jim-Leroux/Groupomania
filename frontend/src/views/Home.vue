@@ -16,7 +16,6 @@
                 <button @click="createPost()" :class="{ 'button--disabled': !validatedFields }">Publier</button>
             </div>
         </div>
-        <div>{{ VUE_APP_ADMIN_ACCESS }}</div>
         <!-- ----------------- AFFICHAGE POSTS ----------------- -->
         <div v-for="post in posts" :key="post.id" class="post-card">
             <div v-if="post.User" class="user-data">
@@ -30,7 +29,7 @@
                     <p @click="updateMode(post.id)"><i class="fa-solid fa-pen-to-square"></i></p>
                     <p @click="deletePost(Object.values(post))"><i class="fa-solid fa-trash"></i></p>
                 </div>
-                <div v-if="post.user_id != user.id && mode != 'update' && user.email == 'admin@gmail.com'"
+                <div v-if="post.user_id != user.id && mode != 'update' && user.email == `${VUE_APP_ADMIN_ACCESS}`"
                     class="post-options">
                     <p @click="deletePost(Object.values(post))"><i class="fa-solid fa-trash"></i></p>
                 </div>
@@ -69,7 +68,7 @@
                         <p @click="swichToUpdateComment(comment.id)"><i class="fa-solid fa-pen-to-square"></i></p>
                         <p @click="deleteComment(comment.id)"><i class="fa-solid fa-trash"></i></p>
                     </div>
-                    <div v-if="post.user_id != user.id && commentMode != 'commentUpdate' && user.email == 'admin@gmail.com'"
+                    <div v-if="post.user_id != user.id && commentMode != 'commentUpdate' && user.email == `${VUE_APP_ADMIN_ACCESS}`"
                         class="comment-options">
                         <p @click="deleteComment(comment.id)"><i class="fa-solid fa-trash"></i></p>
                     </div>
@@ -135,7 +134,6 @@ export default {
         this.$store.dispatch("getPosts");
         this.$store.dispatch("getUserInfos");
 
-        console.log(this.VUE_APP_ADMIN_ACCESS);
     },
     computed: {
         ...mapState({

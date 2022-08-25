@@ -1,6 +1,9 @@
 import axios from "axios";
 import { createStore } from "vuex";
 
+// RÉCUPÉRATION DE LA VARIABLE D'ENVIRONNEMENT
+const admin_access = process.env.VUE_APP_ADMIN_ACCESS;
+
 // CRÉATION DE L'URL DE BASE
 const instance = axios.create({
   baseURL: "http://localhost:8888",
@@ -217,7 +220,7 @@ const store = createStore({
       const id = state.user.userId;
       const admin_access = state.userInfos.email;
 
-      if (state.userInfos.email === "admin@gmail.com") {
+      if (state.userInfos.email === admin_access) {
         instance
           .post(`posts/delete/${selectedPost}`, {
             admin_access: admin_access,
@@ -274,7 +277,7 @@ const store = createStore({
     deleteComment: ({ state }, selectedComment) => {
       const id = state.user.userId;
       const admin_access = state.userInfos.email;
-      if (state.userInfos.email === "admin@gmail.com") {
+      if (state.userInfos.email === admin_access) {
         instance
           .post(`comments/delete/${selectedComment}`, {
             admin_access: admin_access,
