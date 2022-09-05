@@ -21,7 +21,7 @@
             <div v-if="post.User" class="user-data">
                 <div>
                     <img class="img-profil" :src="post.User.imageUrl" />
-                    <p class="user-name">{{ post.User.firstname }} {{ post.User.name }}</p>
+                    <p class="user-name">{{  post.User.firstname  }} {{  post.User.name  }}</p>
                 </div>
 
                 <!-- ----------------- POST OPTIONS ----------------- -->
@@ -35,7 +35,7 @@
                 </div>
             </div>
 
-            <p class="post-msg">{{ post.description }}</p>
+            <p class="post-msg">{{  post.description  }}</p>
 
             <div class="post-data">
                 <img class="post-img" v-if="post.imageUrl" :src="post.imageUrl" alt="post-img">
@@ -60,7 +60,7 @@
                 <div v-if="comment" class="comment-description">
                     <img :src="comment.User.imageUrl" alt="img-profil" class="comment-user-img">
                     <div>
-                        <p>{{ comment.User.firstname }} {{ comment.User.name }}</p>
+                        <p>{{  comment.User.firstname  }} {{  comment.User.name  }}</p>
                     </div>
 
                     <!-- ----------------- COMMENTAIRE OPTIONS ----------------- -->
@@ -73,7 +73,7 @@
                         <p @click="deleteComment(comment.id)"><i class="fa-solid fa-trash"></i></p>
                     </div>
                 </div>
-                <p class="comment-text">{{ comment.description }}</p>
+                <p class="comment-text">{{  comment.description  }}</p>
 
                 <!-- ----------------- MODIFICATION COMMMENTAIRE ----------------- -->
                 <div class="post-comment">
@@ -124,8 +124,6 @@ export default {
         }
     },
     mounted: function () {
-        // console.log(this.posts.User);
-
         // REDIRECTION AU FORMULAIRE DE CONNEXION
         if (this.$store.state.user.userId == -1) {
             this.$router.push("/");
@@ -142,7 +140,7 @@ export default {
 
         }),
         validatedFields() {
-            if (this.description != "") {
+            if (this.description != "" || this.imageUrl != "") {
                 return true;
             } else {
                 return false;
@@ -150,34 +148,9 @@ export default {
         },
     },
     methods: {
-        onFileChange(e) {
-            const file = e.target.files[0];
-            this.url = URL.createObjectURL(file);
-        },
-        createPost: function () {
-            // let formData = new FormData();
-            // formData.append("user_firstname", this.firstname)
-            // formData.append("user_name", this.name)
-            // formData.append("user_email", this.email)
-            // formData.append("user_password", this.password)
-            // formData.append("user_picture", this.imageUrl)
-
-            // console.log(formData);
-
-            let newPost = {
-                description: this.description,
-                imageUrl: this.imageUrl,
-            }
-
-            // console.log(newUser);
-
-            this.$store.dispatch('createPost', newPost).then((response) => {
-                console.log("Post Created");
-                this.$router.go("/home");
-            }), (error) => {
-                console.log("error");
-                console.log(error);
-            }
+        onFileChange(event) {
+            this.imageUrl = event.target.files[0];
+            this.url = URL.createObjectURL(this.imageUrl);
         },
         updateMode: function (post_id) {
             this.postId = post_id;
@@ -194,6 +167,19 @@ export default {
         switchToNull: function () {
             this.mode = "";
             this.commentMode = "";
+        },
+        createPost: function () {
+            let formData = new FormData();
+            formData.append("description", this.description)
+            formData.append("imageUrl", this.imageUrl)
+
+            this.$store.dispatch('createPost', formData).then((response) => {
+                console.log("Post Created");
+                this.$router.go("/home"); // erreur de publication de post avec le go home
+            }), (error) => {
+                console.log("error");
+                console.log(error);
+            }
         },
         updatePost: function (value) {
             const selectedPost = value[0] // récuparation de l'id du post

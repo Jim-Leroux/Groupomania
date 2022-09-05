@@ -23,9 +23,9 @@
 
         <div v-else class="profil-card">
             <img class="user-img" :src="user.imageUrl" alt="user-img">
-            <p>{{ user.firstname }}</p>
-            <p>{{ user.name }}</p>
-            <p>{{ user.email }}</p>
+            <p>{{  user.firstname  }}</p>
+            <p>{{  user.name  }}</p>
+            <p>{{  user.email  }}</p>
             <div class="form-row">
                 <button @click="switchToEdit()">Modifier</button>
 
@@ -89,21 +89,9 @@ export default {
             formData.append("user_password", this.password)
             formData.append("user_picture", this.imageUrl)
 
-            console.log(formData);
-
-            // let newUser = {
-            //     user_email: this.email,
-            //     user_firstname: this.firstname,
-            //     user_name: this.name,
-            //     user_password: this.password,
-            //     user_imageUrl: this.imageUrl,
-            // }
-
-            // console.log(newUser);
-
             this.$store.dispatch('updateUser', formData).then((response) => {
                 console.log("User updated");
-                // this.$router.go("/profil");
+                this.$router.go("/profil");
             }), (error) => {
                 console.log("error");
                 console.log(error);

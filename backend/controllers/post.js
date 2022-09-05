@@ -55,23 +55,25 @@ exports.getOne = async (req, res, next) => {
 };
 
 exports.createOne = async (req, res, next) => {
+  console.log(req.body);
   try {
     const user_id = req.body.user_id;
-    const description = req.body.newPost.description;
+    const description = req.body.description;
+    let imageUrl = "";
 
-    if (!user_id || !description) {
+    if (!user_id && !description) {
       throw new RequestError("Missing parameter");
     }
 
     if (req.file) {
-      const imageUrl = `${req.protocol}://${req.get("host")}/images/${
+      const url = `${req.protocol}://${req.get("host")}/images/${
         req.file.filename
       }`;
 
-      req.body.imageUrl = imageUrl;
+      imageUrl = url;
     }
 
-    const newPost = { user_id, description };
+    const newPost = { user_id, description, imageUrl };
 
     await Post.create(newPost);
     return res.json({ message: "Post Created", data: Post });
@@ -185,7 +187,7 @@ exports.deleteOne = async (req, res, next) => {
     }
 
     if (req.body.admin_access === process.env.ADMIN_ACCESS) {
-      if (req.file) {
+      if (post.imageUrl != "") {
         const filename = post.imageUrl.split("/images/")[1];
 
         fs.unlink(`images/${filename}`, (error) => {
@@ -199,7 +201,7 @@ exports.deleteOne = async (req, res, next) => {
         throw new RequestError("Unhautorized", 1);
       }
 
-      if (req.file) {
+      if (post.imageUrl != "") {
         const filename = post.imageUrl.split("/images/")[1];
 
         fs.unlink(`images/${filename}`, (error) => {

@@ -12,9 +12,9 @@ router.get("/", postCtrl.getAll);
 
 router.get("/:id", postCtrl.getOne);
 
-router.put("/", checkToken, multer, postCtrl.createOne);
+router.put("/", multer.single("imageUrl"), checkToken, postCtrl.createOne);
 
-router.patch("/:id", checkToken, multer, postCtrl.updateOne);
+router.patch("/:id", multer.single("imageUrl"), checkToken, postCtrl.updateOne);
 
 router.post("/untrash/:id", checkToken, postCtrl.untrashOne);
 

@@ -61,6 +61,7 @@ nav {
             margin: 0 3rem;
             width: 3rem;
             height: 3rem;
+            object-fit: cover;
             background-color: rgb(111, 183, 255);
             box-shadow: 0px 0px 10px 3px rgb(194, 194, 194);
             border-radius: 200%;

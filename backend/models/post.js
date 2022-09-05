@@ -19,7 +19,7 @@ module.exports = (sequelize) => {
       description: {
         type: DataTypes.TEXT,
         defaultValue: "",
-        allowNull: false,
+        allowNull: true,
       },
       imageUrl: {
         type: DataTypes.STRING(100),

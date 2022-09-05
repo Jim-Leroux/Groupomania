@@ -9,6 +9,12 @@ const instance = axios.create({
   baseURL: "http://localhost:8888",
 });
 
+let config = {
+  headers: {
+    "Content-Type": "multipart/form-data; boundary=${formData._boundary} ",
+  },
+};
+
 // RÉCUPÉRATION DU USER DEPUIS LE LOCAL STORAGE
 let user = localStorage.getItem("user");
 if (!user) {
@@ -152,20 +158,15 @@ const store = createStore({
         });
     },
     updateUser: ({ commit, state }, formData) => {
-      let config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: "Bearer " + user.access_token,
-        },
-      };
       let id = state.user.userId;
+
+      formData.append("user_id", id);
+
       instance
-        .patch(
-          `/users/${id}`,
-          {
-            user_id: id,
-            formData,
-          },
+        .put(
+          `/users/update/${id}`,
+          formData,
+
           config // l'ajout de la config envoi un objet vide au backend
         )
         .then((res) => {
@@ -188,13 +189,13 @@ const store = createStore({
           console.log(err);
         });
     },
-    createPost: ({ commit, state }, newPost) => {
+    createPost: ({ state }, formData) => {
       const id = state.user.userId;
+
+      formData.append("user_id", id);
+
       instance
-        .put("posts", {
-          user_id: id,
-          newPost,
-        })
+        .put("posts", formData, config)
         .then(function (response) {
           console.log(response);
         })
@@ -223,6 +224,7 @@ const store = createStore({
       if (state.userInfos.email === admin_access) {
         instance
           .post(`posts/delete/${selectedPost}`, {
+            user_id: id,
             admin_access: admin_access,
           })
           .then(function (response) {

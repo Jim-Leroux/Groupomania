@@ -74,7 +74,7 @@ exports.updateOne = async (req, res, next) => {
       user_email,
       user_password,
       user_imageUrl,
-    } = req.body.formData;
+    } = req.body;
 
     let userId = parseInt(req.params.id);
 
@@ -112,7 +112,7 @@ exports.updateOne = async (req, res, next) => {
         name: user_name,
         email: user_email,
         password: user_password,
-        imageUrl: user_imageUrl,
+        imageUrl: user_picture,
       };
 
       await User.update(newUser, { where: { id: userId } });
