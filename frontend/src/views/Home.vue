@@ -16,12 +16,13 @@
                 <button @click="createPost()" :class="{ 'button--disabled': !validatedFields }">Publier</button>
             </div>
         </div>
+
         <!-- ----------------- AFFICHAGE POSTS ----------------- -->
         <div v-for="post in posts" :key="post.id" class="post-card">
             <div v-if="post.User" class="user-data">
                 <div>
                     <img class="img-profil" :src="post.User.imageUrl" />
-                    <p class="user-name">{{  post.User.firstname  }} {{  post.User.name  }}</p>
+                    <p class="user-name">{{ post.User.firstname }} {{ post.User.name }}</p>
                 </div>
 
                 <!-- ----------------- POST OPTIONS ----------------- -->
@@ -35,7 +36,7 @@
                 </div>
             </div>
 
-            <p class="post-msg">{{  post.description  }}</p>
+            <p class="post-msg">{{ post.description }}</p>
 
             <div class="post-data">
                 <img class="post-img" v-if="post.imageUrl" :src="post.imageUrl" alt="post-img">
@@ -43,8 +44,14 @@
 
             <!-- ----------------- COMMENTAIRE & LIKE ----------------- -->
             <div v-if="mode != 'comment'" class="like-comment">
-                <p @click="likeDislike(post.id)"><i class="fa-solid fa-heart"></i></p>
+
+                <input type="checkbox" name="checkbox" v-bind:id="post.id" :value="post.id" v-model="liked">
+                <label @click="likeDislike(post.id)" v-bind:for="post.id"><i class="fa-solid fa-heart"></i></label>
+
                 <p @click="swichToComment(post.id)" class="show-comment-btn">Commenter</p>
+
+                <!-- <p v-if="like.user_id == user.id" @click="likeDislike(post.id)"><i class="fa-solid fa-heart"></i></p> -->
+                <!-- <p v-if="like.user_id != user.id" @click="likeDislike(post.id)"><i class="fa-solid fa-heart"></i></p> -->
             </div>
 
             <!-- ----------------- MODIFICATION POST ----------------- -->
@@ -60,7 +67,7 @@
                 <div v-if="comment" class="comment-description">
                     <img :src="comment.User.imageUrl" alt="img-profil" class="comment-user-img">
                     <div>
-                        <p>{{  comment.User.firstname  }} {{  comment.User.name  }}</p>
+                        <p>{{ comment.User.firstname }} {{ comment.User.name }}</p>
                     </div>
 
                     <!-- ----------------- COMMENTAIRE OPTIONS ----------------- -->
@@ -73,7 +80,7 @@
                         <p @click="deleteComment(comment.id)"><i class="fa-solid fa-trash"></i></p>
                     </div>
                 </div>
-                <p class="comment-text">{{  comment.description  }}</p>
+                <p class="comment-text">{{ comment.description }}</p>
 
                 <!-- ----------------- MODIFICATION COMMMENTAIRE ----------------- -->
                 <div class="post-comment">
@@ -120,6 +127,7 @@ export default {
             description: "",
             imageUrl: "",
             comment_description: "",
+            liked: [],
             VUE_APP_ADMIN_ACCESS: process.env.VUE_APP_ADMIN_ACCESS
         }
     },
@@ -131,6 +139,8 @@ export default {
         }
         this.$store.dispatch("getPosts");
         this.$store.dispatch("getUserInfos");
+
+        this.getLikeCookie;
 
     },
     computed: {
@@ -146,6 +156,10 @@ export default {
                 return false;
             }
         },
+        getLikeCookie() {
+            let cookieValue = JSON.parse($cookies.get('like'));
+            cookieValue == null ? this.liked = [] : this.liked = cookieValue
+        }
     },
     methods: {
         onFileChange(event) {
@@ -254,6 +268,11 @@ export default {
             }
         },
         likeDislike: function (post_id) {
+            document.addEventListener('input', () => {
+                setTimeout(() => {
+                    this.$cookies.set('like', JSON.stringify(this.liked))
+                }, 300);
+            })
             const selectedPost = post_id // récuparation de l'id du post
 
             this.$store.dispatch('likeDislike', selectedPost).then((response) => {

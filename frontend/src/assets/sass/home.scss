@@ -120,6 +120,13 @@
             padding: 0 1rem;
             display: flex;
             align-items: center;
+            input {
+                display: none;
+                &:checked + label i {
+                    color: rgb(251, 38, 38);
+                    transition: 0.3s;
+                }
+            }
             i {
                 font-size: 1.5rem;
                 padding-right: 1rem;
@@ -162,6 +169,7 @@
             align-items: center;
             i {
                 font-size: 2rem;
+                cursor: pointer;
             }
             input {
                 margin-top: 1rem;
