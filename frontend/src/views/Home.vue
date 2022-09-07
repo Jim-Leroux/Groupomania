@@ -89,7 +89,9 @@
                     <input v-if="commentMode == 'commentUpdate' && commentId == comment.id"
                         v-model="comment_description" class="comment-content" type="text" placeholder="Modifier..">
                     <button v-if="commentMode == 'commentUpdate' && commentId == comment.id"
-                        @click="updateComment(comment.id)" class="send-comment">Modifier</button>
+                        @click="updateComment(comment.id)"
+                        :class="{ 'updateAndCommentButton--disabled': !updateAndCommentFields }"
+                        class="send-comment">Modifier</button>
                 </div>
 
             </div>
@@ -101,6 +103,7 @@
                 <input v-if="commentMode != 'commentUpdate'" v-model="comment_description" class="comment-content"
                     type="text" placeholder="Commenter..">
                 <button v-if="commentMode != 'commentUpdate'" @click="createComment(Object.values(post))"
+                    :class="{ 'updateAndCommentButton--disabled': !updateAndCommentFields }"
                     class="send-comment">Envoyer</button>
 
 
@@ -151,6 +154,13 @@ export default {
         }),
         validatedFields() {
             if (this.description != "" || this.imageUrl != "") {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        updateAndCommentFields() {
+            if (this.description != "" || this.comment_description) {
                 return true;
             } else {
                 return false;

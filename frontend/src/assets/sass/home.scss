@@ -74,6 +74,11 @@
         background-color: #E36881;
     }
 
+    .updateAndCommentButton--disabled {
+        pointer-events: none;
+        background-color: #E36881;
+    }
+
     .post-card {
         padding: 1rem;
         margin-top: 3rem;
