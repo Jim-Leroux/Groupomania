@@ -43,7 +43,7 @@
             </div>
 
             <!-- ----------------- COMMENTAIRE & LIKE ----------------- -->
-            <div v-if="mode != 'comment'" class="like-comment">
+            <div v-if="mode != 'comment' || post.id != postId" class="like-comment">
 
                 <input type="checkbox" name="checkbox" v-bind:id="post.id" :value="post.id" v-model="liked">
                 <label @click="likeDislike(post.id)" v-bind:for="post.id"><i class="fa-solid fa-heart"></i></label>
@@ -71,7 +71,7 @@
                     </div>
 
                     <!-- ----------------- COMMENTAIRE OPTIONS ----------------- -->
-                    <div v-if="post.user_id == user.id && commentMode != 'commentUpdate'" class="comment-options">
+                    <div v-if="comment.User.id == user.id && commentMode != 'commentUpdate'" class="comment-options">
                         <p @click="swichToUpdateComment(comment.id)"><i class="fa-solid fa-pen-to-square"></i></p>
                         <p @click="deleteComment(comment.id)"><i class="fa-solid fa-trash"></i></p>
                     </div>
@@ -199,7 +199,10 @@ export default {
 
             this.$store.dispatch('createPost', formData).then((response) => {
                 console.log("Post Created");
-                this.$router.go("/home"); // erreur de publication de post avec le go home
+                setTimeout(() => {
+                    this.$router.go("/home");
+                }, 300);
+                // this.$router.go("/home"); // erreur de publication de post avec le go home
             }), (error) => {
                 console.log("error");
                 console.log(error);

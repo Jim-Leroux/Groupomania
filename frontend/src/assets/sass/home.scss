@@ -154,9 +154,11 @@
                 color: #404040;
             }
             .comment-user-img {
+                height: 40px;
                 width: 2.5rem;
                 border-radius: 200%;
                 box-shadow: 0px 0px 10px 3px rgb(194, 194, 194);
+                object-fit: cover;
             }
             .comment-options {
                 display: flex;
