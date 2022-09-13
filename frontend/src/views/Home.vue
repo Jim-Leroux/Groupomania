@@ -57,8 +57,12 @@
             <!-- ----------------- MODIFICATION POST ----------------- -->
             <div v-if="mode == 'update' && post.id == postId" class="post-comment">
                 <p @click="switchToNull()"><i class="fa-regular fa-circle-xmark"></i></p>
+                <label for="file" class="label-file"><i class="fa-solid fa-image"></i></label>
+                <input @change="updateFile" id="file" class="input-file" type="file">
                 <input v-model="description" class="comment-content" type="text" placeholder="Modifier la description">
-                <button @click="updatePost(Object.values(post))" class="send-comment">Modifier</button>
+                <button @click="updatePost(post.id)"
+                    :class="{ 'updateAndCommentButton--disabled': !updateAndCommentFields }"
+                    class="send-comment">Modifier</button>
             </div>
 
             <!-- ----------------- AFFICHAGE COMMENTAIRE ----------------- -->
@@ -160,7 +164,7 @@ export default {
             }
         },
         updateAndCommentFields() {
-            if (this.description != "" || this.comment_description) {
+            if (this.description != "" || this.comment_description != "" || this.imageUrl != "") {
                 return true;
             } else {
                 return false;
@@ -175,6 +179,9 @@ export default {
         onFileChange(event) {
             this.imageUrl = event.target.files[0];
             this.url = URL.createObjectURL(this.imageUrl);
+        },
+        updateFile(event) {
+            this.imageUrl = event.target.files[0];
         },
         updateMode: function (post_id) {
             this.postId = post_id;
@@ -208,15 +215,23 @@ export default {
                 console.log(error);
             }
         },
-        updatePost: function (value) {
-            const selectedPost = value[0] // récuparation de l'id du post
+        updatePost: function (postId) {
+            let formData = new FormData();
 
-            let updatedPost = {
-                selectedPost,
-                description: this.description,
+            if (this.description != "") {
+                formData.append("description", this.description)
+            }
+            if (this.imageUrl != "") {
+                formData.append("imageUrl", this.imageUrl)
             }
 
-            this.$store.dispatch('updatePost', updatedPost).then((response) => {
+            let newpost = {
+                postId,
+                formData
+            }
+
+
+            this.$store.dispatch('updatePost', newpost).then((response) => {
                 console.log("Post Updated");
                 this.$router.go("/home");
             }), (error) => {

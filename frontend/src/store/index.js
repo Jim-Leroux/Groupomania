@@ -48,35 +48,7 @@ const store = createStore({
       password: "",
       imageUrl: "",
     },
-    postDatas: {
-      User: {
-        email: "",
-        name: "",
-        firstname: "",
-        password: "",
-        imageUrl: "",
-      },
-      Comment: {
-        id: "",
-        user_id: "",
-        post_id: "",
-        description: "",
-        imageUrl: "",
-        createdAt: "",
-        User: {
-          email: "",
-          name: "",
-          firstname: "",
-          password: "",
-          imageUrl: "",
-        },
-      },
-      id: "",
-      user_id: "",
-      description: "",
-      imageUrl: "",
-      createdAt: "",
-    },
+    postDatas: {},
   },
 
   // EVENEMENT QUI VIENT MODIFIER UN ELEMENT DU STATE
@@ -203,13 +175,17 @@ const store = createStore({
           console.log(error);
         });
     },
-    updatePost: ({ state }, updatedPost) => {
+    updatePost: ({ state }, newpost) => {
       const id = state.user.userId;
+
+      let postId = newpost.postId;
+
+      let formData = newpost.formData;
+
+      formData.append("user_id", id);
+
       instance
-        .patch(`posts/${updatedPost.selectedPost}`, {
-          user_id: id,
-          description: updatedPost.description,
-        })
+        .put(`posts/update/${postId}`, formData, config)
         .then(function (response) {
           console.log(response);
         })

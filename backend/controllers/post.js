@@ -218,7 +218,6 @@ exports.deleteOne = async (req, res, next) => {
 
 exports.likeDislike = async (req, res, next) => {
   try {
-    console.log(req.body);
     const { post_id, user_id } = req.body;
 
     if (!post_id || !user_id) {

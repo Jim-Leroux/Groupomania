@@ -79,6 +79,11 @@
         background-color: #E36881;
     }
 
+    .label-file:hover {
+        color: #dc3545;
+        transition: 0.3s;
+    }
+
     .post-card {
         padding: 1rem;
         margin-top: 3rem;
@@ -119,6 +124,10 @@
                 border-radius: 20px;
                 width: 90%;
             }
+        }
+
+        .input-file {
+            display: none;
         }
         
         .like-comment {

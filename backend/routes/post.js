@@ -14,7 +14,19 @@ router.get("/:id", postCtrl.getOne);
 
 router.put("/", multer.single("imageUrl"), checkToken, postCtrl.createOne);
 
-router.patch("/:id", multer.single("imageUrl"), checkToken, postCtrl.updateOne);
+// router.put(
+//   "/update/:id",
+//   multer.single("user_picture"),
+//   checkToken,
+//   userCtrl.updateOne
+// );
+
+router.put(
+  "/update/:id",
+  multer.single("imageUrl"),
+  checkToken,
+  postCtrl.updateOne
+);
 
 router.post("/untrash/:id", checkToken, postCtrl.untrashOne);
 
