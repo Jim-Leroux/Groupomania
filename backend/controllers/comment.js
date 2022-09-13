@@ -67,8 +67,6 @@ exports.updateOne = async (req, res, next) => {
       raw: true,
     });
 
-    console.log(comment);
-
     if (req.body.user_id !== comment.user_id) {
       throw new RequestError("Unhautorized", 1);
     }

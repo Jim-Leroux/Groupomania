@@ -59,7 +59,8 @@
                 <p @click="switchToNull()"><i class="fa-regular fa-circle-xmark"></i></p>
                 <label for="file" class="label-file"><i class="fa-solid fa-image"></i></label>
                 <input @change="updateFile" id="file" class="input-file" type="file">
-                <input v-model="description" class="comment-content" type="text" placeholder="Modifier la description">
+                <input v-model="update_description" class="comment-content" type="text"
+                    placeholder="Modifier la description">
                 <button @click="updatePost(post.id)"
                     :class="{ 'updateAndCommentButton--disabled': !updateAndCommentFields }"
                     class="send-comment">Modifier</button>
@@ -132,6 +133,7 @@ export default {
             commentId: "",
             url: null,
             description: "",
+            update_description: "",
             imageUrl: "",
             comment_description: "",
             liked: [],
@@ -149,12 +151,12 @@ export default {
 
         this.getLikeCookie;
 
+        console.log(this.posts);
     },
     computed: {
         ...mapState({
             user: "userInfos",
             posts: 'postDatas',
-
         }),
         validatedFields() {
             if (this.description != "" || this.imageUrl != "") {
@@ -164,7 +166,7 @@ export default {
             }
         },
         updateAndCommentFields() {
-            if (this.description != "" || this.comment_description != "" || this.imageUrl != "") {
+            if (this.update_description != "" || this.comment_description != "" || this.imageUrl != "") {
                 return true;
             } else {
                 return false;
@@ -173,7 +175,7 @@ export default {
         getLikeCookie() {
             let cookieValue = JSON.parse($cookies.get('like'));
             cookieValue == null ? this.liked = [] : this.liked = cookieValue
-        }
+        },
     },
     methods: {
         onFileChange(event) {
@@ -188,6 +190,7 @@ export default {
             this.mode = "update";
         },
         swichToComment: function (post_id) {
+            this.comment_description = "";
             this.postId = post_id;
             this.mode = "comment";
         },
@@ -205,11 +208,8 @@ export default {
             formData.append("imageUrl", this.imageUrl)
 
             this.$store.dispatch('createPost', formData).then((response) => {
+                this.description = "";
                 console.log("Post Created");
-                setTimeout(() => {
-                    this.$router.go("/home");
-                }, 300);
-                // this.$router.go("/home"); // erreur de publication de post avec le go home
             }), (error) => {
                 console.log("error");
                 console.log(error);
@@ -218,8 +218,8 @@ export default {
         updatePost: function (postId) {
             let formData = new FormData();
 
-            if (this.description != "") {
-                formData.append("description", this.description)
+            if (this.update_description != "") {
+                formData.append("description", this.update_description)
             }
             if (this.imageUrl != "") {
                 formData.append("imageUrl", this.imageUrl)
@@ -233,7 +233,7 @@ export default {
 
             this.$store.dispatch('updatePost', newpost).then((response) => {
                 console.log("Post Updated");
-                this.$router.go("/home");
+                this.mode = "";
             }), (error) => {
                 console.log("error");
                 console.log(error);
@@ -245,7 +245,6 @@ export default {
 
             this.$store.dispatch('deletePost', selectedPost).then((response) => {
                 console.log("Post Deleted");
-                this.$router.go("/home");
             }), (error) => {
                 console.log("error");
                 console.log(error);
@@ -261,7 +260,7 @@ export default {
 
             this.$store.dispatch('createComment', newComment).then((response) => {
                 console.log("Comment Created");
-                this.$router.go("/home");
+                this.comment_description = "";
             }), (error) => {
                 console.log("error");
                 console.log(error);
@@ -278,7 +277,8 @@ export default {
 
             this.$store.dispatch('updateComment', updatedComment).then((response) => {
                 console.log("Comment Updated");
-                this.$router.go("/home");
+                this.comment_description = "";
+                this.commentMode = "";
             }), (error) => {
                 console.log("error");
                 console.log(error);
@@ -289,7 +289,6 @@ export default {
 
             this.$store.dispatch('deleteComment', selectedComment).then((response) => {
                 console.log("Comment Deleted");
-                this.$router.go("/home");
             }), (error) => {
                 console.log("error");
                 console.log(error);
@@ -304,7 +303,6 @@ export default {
             const selectedPost = post_id // récuparation de l'id du post
 
             this.$store.dispatch('likeDislike', selectedPost).then((response) => {
-                // this.$router.go("/home");
             }), (error) => {
                 console.log("error");
                 console.log(error);

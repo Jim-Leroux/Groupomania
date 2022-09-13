@@ -129,7 +129,7 @@ const store = createStore({
           console.log(error);
         });
     },
-    updateUser: ({ commit, state }, formData) => {
+    updateUser: ({ state, dispatch }, formData) => {
       let id = state.user.userId;
 
       formData.append("user_id", id);
@@ -142,7 +142,7 @@ const store = createStore({
           config // l'ajout de la config envoi un objet vide au backend
         )
         .then((res) => {
-          commit("userInfos", formData);
+          dispatch("getUserInfos");
           console.log(res);
         })
         .catch((err) => {
@@ -153,7 +153,6 @@ const store = createStore({
       instance
         .get("/posts")
         .then((res) => {
-          console.log(res.data.data);
           let postDatas = res.data.data.reverse();
           commit("postDatas", postDatas);
         })
@@ -161,7 +160,7 @@ const store = createStore({
           console.log(err);
         });
     },
-    createPost: ({ state }, formData) => {
+    createPost: ({ state, dispatch }, formData) => {
       const id = state.user.userId;
 
       formData.append("user_id", id);
@@ -170,12 +169,13 @@ const store = createStore({
         .put("posts", formData, config)
         .then(function (response) {
           console.log(response);
+          dispatch("getPosts");
         })
         .catch(function (error) {
           console.log(error);
         });
     },
-    updatePost: ({ state }, newpost) => {
+    updatePost: ({ state, dispatch }, newpost) => {
       const id = state.user.userId;
 
       let postId = newpost.postId;
@@ -188,14 +188,14 @@ const store = createStore({
         .put(`posts/update/${postId}`, formData, config)
         .then(function (response) {
           console.log(response);
+          dispatch("getPosts");
         })
         .catch(function (error) {
           console.log(error);
         });
     },
-    deletePost: ({ state }, selectedPost) => {
+    deletePost: ({ state, dispatch }, selectedPost) => {
       const id = state.user.userId;
-      const admin_access = state.userInfos.email;
 
       if (state.userInfos.email === admin_access) {
         instance
@@ -204,6 +204,7 @@ const store = createStore({
             admin_access: admin_access,
           })
           .then(function (response) {
+            dispatch("getPosts");
             console.log(response);
           })
           .catch(function (error) {
@@ -215,6 +216,7 @@ const store = createStore({
             user_id: id,
           })
           .then(function (response) {
+            dispatch("getPosts");
             console.log(response);
           })
           .catch(function (error) {
@@ -222,7 +224,7 @@ const store = createStore({
           });
       }
     },
-    createComment: ({ state }, newComment) => {
+    createComment: ({ state, dispatch }, newComment) => {
       const id = state.user.userId;
 
       instance
@@ -231,13 +233,14 @@ const store = createStore({
           newComment,
         })
         .then(function (response) {
+          dispatch("getPosts");
           console.log(response);
         })
         .catch(function (error) {
           console.log(error);
         });
     },
-    updateComment: ({ state }, updatedComment) => {
+    updateComment: ({ state, dispatch }, updatedComment) => {
       let id = state.user.userId;
       let commentId = updatedComment.selectedComment;
       instance
@@ -246,21 +249,25 @@ const store = createStore({
           updatedComment,
         })
         .then((res) => {
+          dispatch("getPosts");
           console.log(res);
         })
         .catch((err) => {
           console.log(err);
         });
     },
-    deleteComment: ({ state }, selectedComment) => {
+    deleteComment: ({ state, dispatch }, selectedComment) => {
       const id = state.user.userId;
-      const admin_access = state.userInfos.email;
+
       if (state.userInfos.email === admin_access) {
+        console.log("coucou");
         instance
           .post(`comments/delete/${selectedComment}`, {
+            user_id: id,
             admin_access: admin_access,
           })
           .then(function (response) {
+            dispatch("getPosts");
             console.log(response);
           })
           .catch(function (error) {
@@ -272,6 +279,7 @@ const store = createStore({
             user_id: id,
           })
           .then(function (response) {
+            dispatch("getPosts");
             console.log(response);
           })
           .catch(function (error) {
@@ -279,7 +287,7 @@ const store = createStore({
           });
       }
     },
-    likeDislike: ({ state }, selectedPost) => {
+    likeDislike: ({ state, dispatch }, selectedPost) => {
       const id = state.user.userId;
       instance
         .post(`posts/like`, {
@@ -287,6 +295,7 @@ const store = createStore({
           post_id: selectedPost,
         })
         .then(function (response) {
+          dispatch("getPosts");
           console.log(response);
         })
         .catch(function (error) {

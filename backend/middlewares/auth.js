@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 
 // VÉRIFICATION DE LA PRÉSENCE DU TOKEN
 const checkToken = (req, res, next) => {
+  console.log(req.body);
   if (!req.headers.authorization) {
     return res.status(401).json({ message: "Unauthorized" });
   }
