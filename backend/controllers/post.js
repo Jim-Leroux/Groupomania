@@ -216,6 +216,14 @@ exports.deleteOne = async (req, res, next) => {
   }
 };
 
+exports.getLikes = (req, res, next) => {
+  Like.findAll({ where: { user_id: req.body.user_id } })
+    .then((likes) => {
+      res.status(200).json({ likes });
+    })
+    .catch((error) => next(error));
+};
+
 exports.likeDislike = async (req, res, next) => {
   try {
     const { post_id, user_id } = req.body;

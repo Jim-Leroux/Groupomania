@@ -46,12 +46,12 @@
             <div v-if="mode != 'comment' || post.id != postId" class="like-comment">
 
                 <input type="checkbox" name="checkbox" v-bind:id="post.id" :value="post.id" v-model="liked">
-                <label @click="likeDislike(post.id)" v-bind:for="post.id"><i class="fa-solid fa-heart"></i></label>
+                <label @click="likeDislike(post.id)" v-bind:for="post.id"><i v-if="liked.includes(post.id)"
+                        :class="{ 'isLiked': isLiked }" class="isLiked fa-solid fa-heart"></i>
+                    <i v-else :class="{ 'isLiked': isLiked }" class="fa-solid fa-heart"></i>
+                </label>
 
                 <p @click="swichToComment(post.id)" class="show-comment-btn">Commenter</p>
-
-                <!-- <p v-if="like.user_id == user.id" @click="likeDislike(post.id)"><i class="fa-solid fa-heart"></i></p> -->
-                <!-- <p v-if="like.user_id != user.id" @click="likeDislike(post.id)"><i class="fa-solid fa-heart"></i></p> -->
             </div>
 
             <!-- ----------------- MODIFICATION POST ----------------- -->
@@ -95,10 +95,9 @@
                         v-model="comment_description" class="comment-content" type="text" placeholder="Modifier..">
                     <button v-if="commentMode == 'commentUpdate' && commentId == comment.id"
                         @click="updateComment(comment.id)"
-                        :class="{ 'updateAndCommentButton--disabled': !updateAndCommentFields }"
+                        :class="{ 'updateAndCommentButton--disabled': !updateAndCommentFields(post.id) }"
                         class="send-comment">Modifier</button>
                 </div>
-
             </div>
 
             <!-- ----------------- PUBLICATION COMMENTAIRE ----------------- -->
@@ -110,8 +109,6 @@
                 <button v-if="commentMode != 'commentUpdate'" @click="createComment(Object.values(post))"
                     :class="{ 'updateAndCommentButton--disabled': !updateAndCommentFields }"
                     class="send-comment">Envoyer</button>
-
-
             </div>
         </div>
     </div>
@@ -148,15 +145,13 @@ export default {
         }
         this.$store.dispatch("getPosts");
         this.$store.dispatch("getUserInfos");
-
-        this.getLikeCookie;
-
-        console.log(this.posts);
+        this.$store.dispatch("getLikes");
     },
     computed: {
         ...mapState({
             user: "userInfos",
             posts: 'postDatas',
+            likes: "postLiked"
         }),
         validatedFields() {
             if (this.description != "" || this.imageUrl != "") {
@@ -172,10 +167,17 @@ export default {
                 return false;
             }
         },
-        getLikeCookie() {
-            let cookieValue = JSON.parse($cookies.get('like'));
-            cookieValue == null ? this.liked = [] : this.liked = cookieValue
-        },
+        isLiked() {
+            this.liked = [];
+            if (Object.values(this.likes) && Object.values(this.likes).length) {
+
+                Object.values(this.likes).forEach(like => {
+                    if (!this.liked.includes(like.post_id)) {
+                        this.liked.push(like.post_id);
+                    }
+                });
+            }
+        }
     },
     methods: {
         onFileChange(event) {
@@ -295,23 +297,21 @@ export default {
             }
         },
         likeDislike: function (post_id) {
-            document.addEventListener('input', () => {
-                setTimeout(() => {
-                    this.$cookies.set('like', JSON.stringify(this.liked))
-                }, 300);
-            })
             const selectedPost = post_id // récuparation de l'id du post
 
             this.$store.dispatch('likeDislike', selectedPost).then((response) => {
+                this.isLiked
             }), (error) => {
                 console.log("error");
                 console.log(error);
             }
         },
+
     },
     components: { Navbar }
 }
 </script>
 
 <style scoped>
+
 </style> 

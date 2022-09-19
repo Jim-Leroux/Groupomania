@@ -49,6 +49,7 @@ const store = createStore({
       imageUrl: "",
     },
     postDatas: {},
+    postLiked: {},
   },
 
   // EVENEMENT QUI VIENT MODIFIER UN ELEMENT DU STATE
@@ -70,6 +71,9 @@ const store = createStore({
     },
     postDatas(state, postDatas) {
       state.postDatas = postDatas;
+    },
+    postLiked(state, postLiked) {
+      state.postLiked = postLiked;
     },
     logout: function (state) {
       state.user = {
@@ -287,6 +291,21 @@ const store = createStore({
           });
       }
     },
+    getLikes: ({ state, commit }) => {
+      const id = state.user.userId;
+
+      instance
+        .post("/posts/getLikes", {
+          user_id: id,
+        })
+        .then((res) => {
+          let likes = res.data.likes;
+          commit("postLiked", likes);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     likeDislike: ({ state, dispatch }, selectedPost) => {
       const id = state.user.userId;
       instance
@@ -295,6 +314,7 @@ const store = createStore({
           post_id: selectedPost,
         })
         .then(function (response) {
+          dispatch("getLikes");
           dispatch("getPosts");
           console.log(response);
         })

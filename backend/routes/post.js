@@ -10,16 +10,11 @@ let router = express.Router();
 // ROUTAGE DE LA RESSOURCE USER
 router.get("/", postCtrl.getAll);
 
+router.post("/getLikes", postCtrl.getLikes);
+
 router.get("/:id", postCtrl.getOne);
 
 router.put("/", multer.single("imageUrl"), checkToken, postCtrl.createOne);
-
-// router.put(
-//   "/update/:id",
-//   multer.single("user_picture"),
-//   checkToken,
-//   userCtrl.updateOne
-// );
 
 router.put(
   "/update/:id",
