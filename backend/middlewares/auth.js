@@ -1,35 +1,37 @@
 // IMPORT DES MODULES
 const jwt = require("jsonwebtoken");
+const DB = require("../db");
+const User = DB.User;
 
 // VÉRIFICATION DE LA PRÉSENCE DU TOKEN
-const checkToken = (req, res, next) => {
-  console.log(req.body);
-  if (!req.headers.authorization) {
+const checkToken = async (req, res, next) => {
+  // console.log(req.headers.authorization);
+  // console.log(req.body);
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+
+    const decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`);
+
+    const userId = decodedToken.id;
+
+    let user = await User.findOne({ where: { id: userId } });
+
+    let isAdmin = user.isAdmin;
+
+    if (user === null) {
+      return res.status(401).json({ message: "Unauthorized" });
+    } else {
+      req.auth = {
+        userId: userId,
+        isAdmin: isAdmin,
+      };
+      next();
+    }
+  } catch (error) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-
-  const token = req.headers.authorization.split(" ")[1];
-
-  const decodedToken = jwt.verify(
-    token,
-    `${process.env.JWT_SECRET}`,
-    (error, decodedToken) => {
-      if (error) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-      const userId = decodedToken.id;
-
-      req.body.user_id = parseInt(req.body.user_id);
-
-      if (req.body.admin_access === process.env.ADMIN_ACCESS) {
-        next();
-      } else if (!req.body.user_id || req.body.user_id !== userId) {
-        return res.status(401).json({ message: "Unauthorized" });
-      } else {
-        next();
-      }
-    }
-  );
+  if (!req.headers.authorization) {
+  }
 };
 
 module.exports = checkToken;

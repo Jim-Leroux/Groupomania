@@ -7,18 +7,18 @@ const express = require("express");
 let router = express.Router();
 
 // ROUTAGE DE LA RESSOURCE USER
-router.get("/", commentCtrl.getAll);
+router.get("/", commentCtrl.getAll); // code mort
 
-router.get("/:id", commentCtrl.getOne);
+router.get("/:id", commentCtrl.getOne); // code mort
 
 router.put("/", checkToken, commentCtrl.createOne);
 
 router.patch("/:id", checkToken, commentCtrl.updateOne);
 
-router.post("/untrash/:id", checkToken, commentCtrl.untrashOne);
+router.post("/untrash/:id", checkToken, commentCtrl.untrashOne); // code mort
 
-router.delete("/trash/:id", checkToken, commentCtrl.trashOne);
+router.delete("/trash/:id", checkToken, commentCtrl.trashOne); // code mort
 
-router.post("/delete/:id", checkToken, commentCtrl.deleteOne);
+router.delete("/delete/:id", checkToken, commentCtrl.deleteOne);
 
 module.exports = router;

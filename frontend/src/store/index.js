@@ -93,7 +93,7 @@ const store = createStore({
       return new Promise((resolve, reject) => {
         // MUTATION DE STATUS VIA LE GESTIONNAIRE COMMIT
         instance
-          .put("/users", userInfos)
+          .post("/users", userInfos)
           .then(function (response) {
             commit("setStatus", "created");
             resolve(response.data.message);
@@ -123,10 +123,9 @@ const store = createStore({
     getUserInfos: ({ commit, state }) => {
       const id = state.user.userId;
       instance
-        .post(`/users/${id}`, {
-          user_id: id,
-        })
+        .get(`/users/${id}`)
         .then(function (response) {
+          console.log(response.data.data);
           commit("userInfos", response.data.data);
         })
         .catch(function (error) {
@@ -136,10 +135,8 @@ const store = createStore({
     updateUser: ({ state, dispatch }, formData) => {
       let id = state.user.userId;
 
-      formData.append("user_id", id);
-
       instance
-        .put(
+        .post(
           `/users/update/${id}`,
           formData,
 
@@ -158,6 +155,7 @@ const store = createStore({
         .get("/posts")
         .then((res) => {
           let postDatas = res.data.data.reverse();
+          console.log(postDatas);
           commit("postDatas", postDatas);
         })
         .catch((err) => {
@@ -180,13 +178,7 @@ const store = createStore({
         });
     },
     updatePost: ({ state, dispatch }, newpost) => {
-      const id = state.user.userId;
-
       let postId = newpost.postId;
-
-      let formData = newpost.formData;
-
-      formData.append("user_id", id);
 
       instance
         .put(`posts/update/${postId}`, formData, config)
@@ -198,35 +190,16 @@ const store = createStore({
           console.log(error);
         });
     },
-    deletePost: ({ state, dispatch }, selectedPost) => {
-      const id = state.user.userId;
-
-      if (state.userInfos.email === admin_access) {
-        instance
-          .post(`posts/delete/${selectedPost}`, {
-            user_id: id,
-            admin_access: admin_access,
-          })
-          .then(function (response) {
-            dispatch("getPosts");
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      } else {
-        instance
-          .post(`posts/delete/${selectedPost}`, {
-            user_id: id,
-          })
-          .then(function (response) {
-            dispatch("getPosts");
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
+    deletePost: ({ dispatch }, selectedPost) => {
+      instance
+        .delete(`posts/delete/${selectedPost}`)
+        .then(function (response) {
+          dispatch("getPosts");
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     createComment: ({ state, dispatch }, newComment) => {
       const id = state.user.userId;
@@ -244,12 +217,10 @@ const store = createStore({
           console.log(error);
         });
     },
-    updateComment: ({ state, dispatch }, updatedComment) => {
-      let id = state.user.userId;
+    updateComment: ({ dispatch }, updatedComment) => {
       let commentId = updatedComment.selectedComment;
       instance
         .patch(`/comments/${commentId}`, {
-          user_id: id,
           updatedComment,
         })
         .then((res) => {
@@ -260,44 +231,20 @@ const store = createStore({
           console.log(err);
         });
     },
-    deleteComment: ({ state, dispatch }, selectedComment) => {
-      const id = state.user.userId;
-
-      if (state.userInfos.email === admin_access) {
-        console.log("coucou");
-        instance
-          .post(`comments/delete/${selectedComment}`, {
-            user_id: id,
-            admin_access: admin_access,
-          })
-          .then(function (response) {
-            dispatch("getPosts");
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      } else {
-        instance
-          .post(`comments/delete/${selectedComment}`, {
-            user_id: id,
-          })
-          .then(function (response) {
-            dispatch("getPosts");
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
-    },
-    getLikes: ({ state, commit }) => {
-      const id = state.user.userId;
-
+    deleteComment: ({ dispatch }, selectedComment) => {
       instance
-        .post("/posts/getLikes", {
-          user_id: id,
+        .delete(`comments/delete/${selectedComment}`)
+        .then(function (response) {
+          dispatch("getPosts");
+          console.log(response);
         })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    getLikes: ({ commit }) => {
+      instance
+        .get("/posts/getLikes")
         .then((res) => {
           let likes = res.data.likes;
           commit("postLiked", likes);

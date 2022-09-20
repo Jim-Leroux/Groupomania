@@ -30,8 +30,7 @@
                     <p @click="updateMode(post.id)"><i class="fa-solid fa-pen-to-square"></i></p>
                     <p @click="deletePost(Object.values(post))"><i class="fa-solid fa-trash"></i></p>
                 </div>
-                <div v-if="post.user_id != user.id && mode != 'update' && user.email == `${VUE_APP_ADMIN_ACCESS}`"
-                    class="post-options">
+                <div v-if="post.user_id != user.id && mode != 'update' && user.isAdmin == true" class="post-options">
                     <p @click="deletePost(Object.values(post))"><i class="fa-solid fa-trash"></i></p>
                 </div>
             </div>
@@ -80,7 +79,7 @@
                         <p @click="swichToUpdateComment(comment.id)"><i class="fa-solid fa-pen-to-square"></i></p>
                         <p @click="deleteComment(comment.id)"><i class="fa-solid fa-trash"></i></p>
                     </div>
-                    <div v-if="post.user_id != user.id && commentMode != 'commentUpdate' && user.email == `${VUE_APP_ADMIN_ACCESS}`"
+                    <div v-if="post.user_id != user.id && commentMode != 'commentUpdate' && user.isAdmin == true"
                         class="comment-options">
                         <p @click="deleteComment(comment.id)"><i class="fa-solid fa-trash"></i></p>
                     </div>
@@ -95,7 +94,7 @@
                         v-model="comment_description" class="comment-content" type="text" placeholder="Modifier..">
                     <button v-if="commentMode == 'commentUpdate' && commentId == comment.id"
                         @click="updateComment(comment.id)"
-                        :class="{ 'updateAndCommentButton--disabled': !updateAndCommentFields(post.id) }"
+                        :class="{ 'updateAndCommentButton--disabled': !updateAndCommentFields }"
                         class="send-comment">Modifier</button>
                 </div>
             </div>

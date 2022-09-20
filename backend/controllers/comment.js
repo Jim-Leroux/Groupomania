@@ -9,7 +9,7 @@ exports.getAll = (req, res, next) => {
   Comment.findAll({ include: User })
     .then((comments) => res.json({ data: comments }))
     .catch((error) => next(error));
-};
+}; // code mort
 
 exports.getOne = async (req, res, next) => {
   let commentId = parseInt(req.params.id);
@@ -33,7 +33,7 @@ exports.getOne = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
+}; // code mort
 
 exports.createOne = async (req, res, next) => {
   try {
@@ -67,7 +67,7 @@ exports.updateOne = async (req, res, next) => {
       raw: true,
     });
 
-    if (req.body.user_id !== comment.user_id) {
+    if (req.auth.userId !== comment.user_id) {
       throw new RequestError("Unhautorized", 1);
     }
 
@@ -113,7 +113,7 @@ exports.untrashOne = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
+}; // code mort
 
 exports.trashOne = async (req, res, next) => {
   try {
@@ -141,7 +141,7 @@ exports.trashOne = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
+}; // code mort
 
 exports.deleteOne = async (req, res, next) => {
   try {
@@ -160,15 +160,11 @@ exports.deleteOne = async (req, res, next) => {
       throw new CommentError("This comment does not exist !", 0);
     }
 
-    if (req.body.admin_access === process.env.ADMIN_ACCESS) {
-      await Comment.destroy({ where: { id: commentId }, force: true });
-    } else {
-      if (req.body.user_id !== comment.user_id) {
-        throw new RequestError("Unhautorized", 1);
-      }
-
-      await Comment.destroy({ where: { id: commentId }, force: true });
+    if (req.auth.userId !== comment.user_id && req.auth.isAdmin !== true) {
+      throw new RequestError("Unhautorized", 1);
     }
+
+    await Comment.destroy({ where: { id: commentId }, force: true });
 
     return res.status(204).json({});
   } catch (error) {

@@ -10,7 +10,7 @@ exports.getAll = (req, res, next) => {
   User.findAll()
     .then((users) => res.json({ data: users }))
     .catch((error) => next(error));
-};
+}; // code mort
 
 exports.getOne = async (req, res, next) => {
   try {
@@ -88,7 +88,7 @@ exports.updateOne = async (req, res, next) => {
       return res.status(404).json({ message: "This user does not exist !" });
     }
 
-    if (req.body.user_id !== user.id) {
+    if (req.auth.userId !== user.id) {
       throw new RequestError("Unhautorized", 1);
     }
 
@@ -150,7 +150,7 @@ exports.untrashOne = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
+}; // code mort
 
 exports.trashOne = async (req, res, next) => {
   try {
@@ -175,7 +175,7 @@ exports.trashOne = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
+}; // code mort
 
 exports.deleteOne = async (req, res, next) => {
   try {
@@ -191,7 +191,7 @@ exports.deleteOne = async (req, res, next) => {
       throw new UserError("This user does not exist !", 0);
     }
 
-    if (req.body.user_id !== user.user_id) {
+    if (req.auth.userId !== user.id && req.auth.isAdmin !== true) {
       throw new RequestError("Unhautorized", 1);
     }
 
@@ -206,4 +206,4 @@ exports.deleteOne = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
+}; // code mort

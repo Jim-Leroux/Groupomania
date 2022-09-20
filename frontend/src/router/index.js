@@ -21,7 +21,7 @@ const routes = [
   },
   {
     path: "/:catchAll(.*)",
-    component: Profil,
+    component: Home,
   },
 ];
 

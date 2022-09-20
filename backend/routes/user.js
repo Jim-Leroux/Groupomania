@@ -10,25 +10,25 @@ let router = express.Router();
 
 // ROUTAGE DE LA RESSOURCE USER
 
-router.post("/", checkToken, userCtrl.getAll);
+router.get("/", checkToken, userCtrl.getAll); // code mort
 
-router.post("/:id", checkToken, userCtrl.getOne);
+router.get("/:id", checkToken, userCtrl.getOne);
 
-router.put("/", userCtrl.createOne);
+router.post("/", userCtrl.createOne);
 
-router.put(
+router.post(
   "/update/:id",
   multer.single("user_picture"),
   checkToken,
   userCtrl.updateOne
 );
 
-router.patch("/:id", checkToken, userCtrl.updateOne);
+router.patch("/:id", checkToken, userCtrl.updateOne); // code mort
 
-router.post("/untrash/:id", checkToken, userCtrl.untrashOne);
+router.post("/untrash/:id", checkToken, userCtrl.untrashOne); // code mort
 
-router.delete("/trash/:id", checkToken, userCtrl.trashOne);
+router.delete("/trash/:id", checkToken, userCtrl.trashOne); // code mort
 
-router.delete("/:id", checkToken, userCtrl.deleteOne);
+router.delete("/:id", checkToken, userCtrl.deleteOne); // code mort
 
 module.exports = router;

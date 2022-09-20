@@ -1,6 +1,7 @@
 // IMPORT DES MODULES
 const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
+const { BOOLEAN } = require("sequelize");
 
 // DÉFINITION DU MODÈLE USER
 module.exports = (sequelize) => {
@@ -31,10 +32,15 @@ module.exports = (sequelize) => {
       password: {
         type: DataTypes.STRING(64),
         is: /^[0-9a-fA-Z]{64}$/i, // Contrainte du MDP
+        allowNull: false,
       },
       imageUrl: {
         type: DataTypes.STRING(100),
         allowNull: false,
+      },
+      isAdmin: {
+        type: BOOLEAN,
+        default: 0,
       },
     },
     { paranoid: true } // SoftDelete
@@ -47,10 +53,6 @@ module.exports = (sequelize) => {
   User.checkPassword = async (password, original) => {
     return await bcrypt.compare(password, original);
   };
-
-  // User.updatePassword = async (user) => {
-  //   user.password = await bcrypt.hash(user.password, 10);
-  // };
 
   return User;
 };

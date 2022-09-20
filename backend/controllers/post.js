@@ -52,7 +52,7 @@ exports.getOne = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
+}; // code mort
 
 exports.createOne = async (req, res, next) => {
   try {
@@ -91,7 +91,7 @@ exports.updateOne = async (req, res, next) => {
 
     let post = await Post.findOne({ where: { id: postId }, raw: true });
 
-    if (req.body.user_id !== post.user_id) {
+    if (req.auth.userId !== post.user_id) {
       throw new RequestError("Unhautorized", 1);
     }
 
@@ -144,7 +144,7 @@ exports.untrashOne = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
+}; // code mort
 
 exports.trashOne = async (req, res, next) => {
   try {
@@ -169,7 +169,7 @@ exports.trashOne = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
+}; // code mort
 
 exports.deleteOne = async (req, res, next) => {
   try {
@@ -185,31 +185,18 @@ exports.deleteOne = async (req, res, next) => {
       throw new PostError("This post does not exist !", 0);
     }
 
-    if (req.body.admin_access === process.env.ADMIN_ACCESS) {
-      if (post.imageUrl != "") {
-        const filename = post.imageUrl.split("/images/")[1];
-
-        fs.unlink(`images/${filename}`, (error) => {
-          if (error) throw error;
-        });
-      }
-
-      await Post.destroy({ where: { id: postId }, force: true });
-    } else {
-      if (req.body.user_id !== post.user_id) {
-        throw new RequestError("Unhautorized", 1);
-      }
-
-      if (post.imageUrl != "") {
-        const filename = post.imageUrl.split("/images/")[1];
-
-        fs.unlink(`images/${filename}`, (error) => {
-          if (error) throw error;
-        });
-      }
-
-      await Post.destroy({ where: { id: postId }, force: true });
+    if (req.auth.userId !== post.user_id && req.auth.isAdmin !== true) {
+      throw new RequestError("Unhautorized", 1);
     }
+    console.log("no");
+    if (req.file) {
+      fs.unlink(`images/${filename}`, (error) => {
+        if (error) throw error;
+      });
+    }
+
+    await Post.destroy({ where: { id: postId }, force: true });
+
     return res.status(204).json({});
   } catch (error) {
     next(error);
@@ -217,7 +204,7 @@ exports.deleteOne = async (req, res, next) => {
 };
 
 exports.getLikes = (req, res, next) => {
-  Like.findAll({ where: { user_id: req.body.user_id } })
+  Like.findAll({ where: { user_id: req.auth.userId } })
     .then((likes) => {
       res.status(200).json({ likes });
     })
