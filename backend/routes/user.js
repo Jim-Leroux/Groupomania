@@ -10,8 +10,6 @@ let router = express.Router();
 
 // ROUTAGE DE LA RESSOURCE USER
 
-router.get("/", checkToken, userCtrl.getAll); // code mort
-
 router.get("/:id", checkToken, userCtrl.getOne);
 
 router.post("/", userCtrl.createOne);
@@ -22,13 +20,5 @@ router.post(
   checkToken,
   userCtrl.updateOne
 );
-
-router.patch("/:id", checkToken, userCtrl.updateOne); // code mort
-
-router.post("/untrash/:id", checkToken, userCtrl.untrashOne); // code mort
-
-router.delete("/trash/:id", checkToken, userCtrl.trashOne); // code mort
-
-router.delete("/:id", checkToken, userCtrl.deleteOne); // code mort
 
 module.exports = router;

@@ -5,8 +5,6 @@ const User = DB.User;
 
 // VÉRIFICATION DE LA PRÉSENCE DU TOKEN
 const checkToken = async (req, res, next) => {
-  // console.log(req.headers.authorization);
-  // console.log(req.body);
   try {
     const token = req.headers.authorization.split(" ")[1];
 
@@ -29,8 +27,6 @@ const checkToken = async (req, res, next) => {
     }
   } catch (error) {
     return res.status(401).json({ message: "Unauthorized" });
-  }
-  if (!req.headers.authorization) {
   }
 };
 

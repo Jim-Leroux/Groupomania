@@ -1,9 +1,6 @@
 import axios from "axios";
 import { createStore } from "vuex";
 
-// RÉCUPÉRATION DE LA VARIABLE D'ENVIRONNEMENT
-const admin_access = process.env.VUE_APP_ADMIN_ACCESS;
-
 // CRÉATION DE L'URL DE BASE
 const instance = axios.create({
   baseURL: "http://localhost:8888",
@@ -177,8 +174,10 @@ const store = createStore({
           console.log(error);
         });
     },
-    updatePost: ({ state, dispatch }, newpost) => {
+    updatePost: ({ dispatch }, newpost) => {
       let postId = newpost.postId;
+
+      let formData = newpost.formData;
 
       instance
         .put(`posts/update/${postId}`, formData, config)

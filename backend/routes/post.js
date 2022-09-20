@@ -12,8 +12,6 @@ router.get("/", postCtrl.getAll);
 
 router.get("/getLikes", checkToken, postCtrl.getLikes);
 
-router.get("/:id", checkToken, postCtrl.getOne); // code mort
-
 router.put("/", multer.single("imageUrl"), checkToken, postCtrl.createOne);
 
 router.put(
@@ -22,10 +20,6 @@ router.put(
   checkToken,
   postCtrl.updateOne
 );
-
-router.post("/untrash/:id", checkToken, postCtrl.untrashOne); // code mort
-
-router.delete("/trash/:id", checkToken, postCtrl.trashOne); // code mort
 
 router.delete("/delete/:id", checkToken, postCtrl.deleteOne);
 

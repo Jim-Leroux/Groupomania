@@ -3,7 +3,6 @@ const { RequestError, PostError } = require("../error/customError");
 const { User, Comment, Like } = require("../db");
 const DB = require("../db");
 const fs = require("fs");
-const user = require("../models/user");
 const Post = DB.Post;
 
 // ROUTAGE DE LA RESSOURCE POST
@@ -29,30 +28,6 @@ exports.getAll = (req, res, next) => {
     .then((posts) => res.json({ data: posts }))
     .catch((error) => next(error));
 };
-
-exports.getOne = async (req, res, next) => {
-  let postId = parseInt(req.params.id);
-
-  if (!postId) {
-    throw new RequestError("Missing parameter");
-  }
-
-  try {
-    let post = await Post.findOne({
-      where: { id: postId },
-      raw: true,
-      include: User,
-    });
-
-    if (post === null) {
-      throw new PostError("This post does not exist !", 0);
-    }
-
-    return res.json({ data: post });
-  } catch (error) {
-    next(error);
-  }
-}; // code mort
 
 exports.createOne = async (req, res, next) => {
   try {
@@ -121,56 +96,6 @@ exports.updateOne = async (req, res, next) => {
   }
 };
 
-exports.untrashOne = async (req, res, next) => {
-  try {
-    let postId = parseInt(req.params.id);
-
-    if (!postId) {
-      throw new RequestError("Missing parameter");
-    }
-
-    let post = await Post.findOne({ where: { id: postId }, raw: true });
-
-    if (post === null) {
-      throw new PostError("This post does not exist !", 0);
-    }
-
-    if (req.body.user_id !== post.user_id) {
-      throw new RequestError("Unhautorized", 1);
-    }
-
-    await Post.restore({ where: { id: postId } });
-    return res.status(204).json({});
-  } catch (error) {
-    next(error);
-  }
-}; // code mort
-
-exports.trashOne = async (req, res, next) => {
-  try {
-    let postId = parseInt(req.params.id);
-
-    if (!postId) {
-      throw new RequestError("Missing parameter");
-    }
-
-    let post = await Post.findOne({ where: { id: postId }, raw: true });
-
-    if (post === null) {
-      throw new PostError("This post does not exist !", 0);
-    }
-
-    if (req.body.user_id !== post.user_id) {
-      throw new RequestError("Unhautorized", 1);
-    }
-
-    await Post.destroy({ where: { id: postId } });
-    return res.status(204).json({});
-  } catch (error) {
-    next(error);
-  }
-}; // code mort
-
 exports.deleteOne = async (req, res, next) => {
   try {
     let postId = parseInt(req.params.id);
@@ -188,7 +113,7 @@ exports.deleteOne = async (req, res, next) => {
     if (req.auth.userId !== post.user_id && req.auth.isAdmin !== true) {
       throw new RequestError("Unhautorized", 1);
     }
-    console.log("no");
+
     if (req.file) {
       fs.unlink(`images/${filename}`, (error) => {
         if (error) throw error;

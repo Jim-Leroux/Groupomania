@@ -133,7 +133,6 @@ export default {
             imageUrl: "",
             comment_description: "",
             liked: [],
-            VUE_APP_ADMIN_ACCESS: process.env.VUE_APP_ADMIN_ACCESS
         }
     },
     mounted: function () {
@@ -242,7 +241,7 @@ export default {
 
         },
         deletePost: function (value) {
-            const selectedPost = value[0] // récuparation de l'id du post
+            const selectedPost = value[0]
 
             this.$store.dispatch('deletePost', selectedPost).then((response) => {
                 console.log("Post Deleted");
@@ -252,7 +251,7 @@ export default {
             }
         },
         createComment: function (value) {
-            const selectedPost = value[0] // récuparation de l'id du post
+            const selectedPost = value[0]
 
             let newComment = {
                 selectedPost,
@@ -269,7 +268,7 @@ export default {
 
         },
         updateComment: function (comment_id) {
-            const selectedComment = comment_id // récuparation de l'id du comment
+            const selectedComment = comment_id
 
             let updatedComment = {
                 selectedComment,
@@ -286,7 +285,7 @@ export default {
             }
         },
         deleteComment: function (comment_id) {
-            const selectedComment = comment_id // récuparation de l'id du comment
+            const selectedComment = comment_id
 
             this.$store.dispatch('deleteComment', selectedComment).then((response) => {
                 console.log("Comment Deleted");
@@ -296,7 +295,7 @@ export default {
             }
         },
         likeDislike: function (post_id) {
-            const selectedPost = post_id // récuparation de l'id du post
+            const selectedPost = post_id
 
             this.$store.dispatch('likeDislike', selectedPost).then((response) => {
                 this.isLiked

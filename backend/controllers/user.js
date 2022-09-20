@@ -6,11 +6,6 @@ const fs = require("fs");
 const User = DB.User;
 
 // ROUTAGE DE LA RESSOURCE USER
-exports.getAll = (req, res, next) => {
-  User.findAll()
-    .then((users) => res.json({ data: users }))
-    .catch((error) => next(error));
-}; // code mort
 
 exports.getOne = async (req, res, next) => {
   try {
@@ -132,78 +127,3 @@ exports.updateOne = async (req, res, next) => {
     next(error);
   }
 };
-
-exports.untrashOne = async (req, res, next) => {
-  try {
-    let userId = parseInt(req.params.id);
-
-    if (!userId) {
-      return res.status(400).json({ message: "Missing Parameter" });
-    }
-
-    if (req.body.user_id !== userId) {
-      throw new RequestError("Unhautorized", 1);
-    }
-
-    await User.restore({ where: { id: userId } });
-    return res.status(204).json({});
-  } catch (error) {
-    next(error);
-  }
-}; // code mort
-
-exports.trashOne = async (req, res, next) => {
-  try {
-    let userId = parseInt(req.params.id);
-
-    if (!userId) {
-      return res.status(400).json({ message: "Missing Parameter" });
-    }
-
-    let user = await user.findOne({ where: { id: userId }, raw: true });
-
-    if (user === null) {
-      throw new UserError("This user does not exist !", 0);
-    }
-
-    if (req.body.user_id !== user.user_id) {
-      throw new RequestError("Unhautorized", 1);
-    }
-
-    await User.destroy({ where: { id: userId } });
-    return res.status(204).json({});
-  } catch (error) {
-    next(error);
-  }
-}; // code mort
-
-exports.deleteOne = async (req, res, next) => {
-  try {
-    let userId = parseInt(req.params.id);
-
-    if (!userId) {
-      return res.status(400).json({ message: "Missing Parameter" });
-    }
-
-    let user = await user.findOne({ where: { id: userId }, raw: true });
-
-    if (user === null) {
-      throw new UserError("This user does not exist !", 0);
-    }
-
-    if (req.auth.userId !== user.id && req.auth.isAdmin !== true) {
-      throw new RequestError("Unhautorized", 1);
-    }
-
-    const filename = user.imageUrl.split("/images/")[1];
-
-    fs.unlink(`images/${filename}`, (error) => {
-      if (error) throw error;
-    });
-
-    await User.destroy({ where: { id: userId }, force: true });
-    return res.status(204).json({});
-  } catch (error) {
-    next(error);
-  }
-}; // code mort

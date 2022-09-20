@@ -1,40 +1,9 @@
 // IMPORT DES MODULES
 const { RequestError, CommentError } = require("../error/customError");
-const { User } = require("../db");
 const DB = require("../db");
 const Comment = DB.Comment;
 
 // ROUTAGE DE LA RESSOURCE Comment
-exports.getAll = (req, res, next) => {
-  Comment.findAll({ include: User })
-    .then((comments) => res.json({ data: comments }))
-    .catch((error) => next(error));
-}; // code mort
-
-exports.getOne = async (req, res, next) => {
-  let commentId = parseInt(req.params.id);
-
-  if (!commentId) {
-    throw new RequestError("Missing parameter");
-  }
-
-  try {
-    let comment = await Comment.findOne({
-      where: { id: commentId },
-      raw: true,
-      include: User,
-    });
-
-    if (comment === null) {
-      throw new CommentError("This comment does not exist !", 0);
-    }
-
-    return res.json({ data: comment });
-  } catch (error) {
-    next(error);
-  }
-}; // code mort
-
 exports.createOne = async (req, res, next) => {
   try {
     const user_id = req.body.user_id;
@@ -86,62 +55,6 @@ exports.updateOne = async (req, res, next) => {
     next(error);
   }
 };
-
-exports.untrashOne = async (req, res, next) => {
-  try {
-    let commentId = parseInt(req.params.id);
-
-    if (!commentId) {
-      throw new RequestError("Missing parameter");
-    }
-
-    let comment = await Comment.findOne({
-      where: { id: commentId },
-      raw: true,
-    });
-
-    if (comment === null) {
-      throw new CommentError("This comment does not exist !", 0);
-    }
-
-    if (req.body.user_id !== comment.user_id) {
-      throw new RequestError("Unhautorized", 1);
-    }
-
-    await Comment.restore({ where: { id: commentId } });
-    return res.status(204).json({});
-  } catch (error) {
-    next(error);
-  }
-}; // code mort
-
-exports.trashOne = async (req, res, next) => {
-  try {
-    let commentId = parseInt(req.params.id);
-
-    if (!commentId) {
-      throw new RequestError("Missing parameter");
-    }
-
-    let comment = await Comment.findOne({
-      where: { id: commentId },
-      raw: true,
-    });
-
-    if (comment === null) {
-      throw new CommentError("This comment does not exist !", 0);
-    }
-
-    if (req.body.user_id !== comment.user_id) {
-      throw new RequestError("Unhautorized", 1);
-    }
-
-    await Comment.destroy({ where: { id: commentId } });
-    return res.status(204).json({});
-  } catch (error) {
-    next(error);
-  }
-}; // code mort
 
 exports.deleteOne = async (req, res, next) => {
   try {
