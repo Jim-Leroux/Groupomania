@@ -56,8 +56,8 @@
             <!-- ----------------- MODIFICATION POST ----------------- -->
             <div v-if="mode == 'update' && post.id == postId" class="post-comment">
                 <p @click="switchToNull()"><i class="fa-regular fa-circle-xmark"></i></p>
-                <label for="file" class="label-file"><i class="fa-solid fa-image"></i></label>
-                <input @change="updateFile" id="file" class="input-file" type="file">
+                <label for="updatefile" class="label-file"><i class="fa-solid fa-image"></i></label>
+                <input @change="updateFile" id="updatefile" class="input-file" type="file">
                 <input v-model="update_description" class="comment-content" type="text"
                     placeholder="Modifier la description">
                 <button @click="updatePost(post.id)"
@@ -209,6 +209,7 @@ export default {
 
             this.$store.dispatch('createPost', formData).then((response) => {
                 this.url = "";
+                this.imageUrl = "";
                 this.description = "";
                 console.log("Post Created");
             }), (error) => {
@@ -234,6 +235,7 @@ export default {
 
             this.$store.dispatch('updatePost', newpost).then((response) => {
                 console.log("Post Updated");
+                this.imageUrl = "";
                 this.mode = "";
             }), (error) => {
                 console.log("error");

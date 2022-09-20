@@ -75,11 +75,14 @@ exports.updateOne = async (req, res, next) => {
     }
 
     if (req.file) {
-      const filename = post.imageUrl.split("/images/")[1];
+      if (post.imageUrl != "") {
+        console.log("yes");
+        const filename = post.imageUrl.split("/images/")[1];
 
-      fs.unlink(`images/${filename}`, (error) => {
-        if (error) throw error;
-      });
+        fs.unlink(`images/${filename}`, (error) => {
+          if (error) throw error;
+        });
+      }
 
       const imageUrl = `${req.protocol}://${req.get("host")}/images/${
         req.file.filename
