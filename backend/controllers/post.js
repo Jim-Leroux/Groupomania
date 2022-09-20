@@ -76,7 +76,6 @@ exports.updateOne = async (req, res, next) => {
 
     if (req.file) {
       if (post.imageUrl != "") {
-        console.log("yes");
         const filename = post.imageUrl.split("/images/")[1];
 
         fs.unlink(`images/${filename}`, (error) => {
@@ -117,7 +116,8 @@ exports.deleteOne = async (req, res, next) => {
       throw new RequestError("Unhautorized", 1);
     }
 
-    if (req.file) {
+    if (post.imageUrl != "") {
+      const filename = post.imageUrl.split("/images/")[1];
       fs.unlink(`images/${filename}`, (error) => {
         if (error) throw error;
       });
