@@ -208,6 +208,7 @@ export default {
             formData.append("imageUrl", this.imageUrl)
 
             this.$store.dispatch('createPost', formData).then((response) => {
+                this.url = "";
                 this.description = "";
                 console.log("Post Created");
             }), (error) => {
