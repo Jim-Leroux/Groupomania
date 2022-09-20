@@ -2,7 +2,7 @@
 
 Télécharger le projet ou faite un git clone.
 
-Depuis le backend lancer la commande "npm init" via le terminal.
+Depuis le backend lancer les commandes "npm init" et "npm install dotenv" via le terminal.
 
 Depuis le frontend lancer la commande "npm install" via le terminal.
 
