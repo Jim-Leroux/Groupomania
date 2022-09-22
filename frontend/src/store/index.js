@@ -86,7 +86,6 @@ const store = createStore({
   actions: {
     // DEUX ARGUMENTS, LE COMMIT, ET L'OBJET QUI CONTIENT LES DONNÉES
     createAccount: ({ commit }, userInfos) => {
-      commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         // MUTATION DE STATUS VIA LE GESTIONNAIRE COMMIT
         instance
@@ -102,7 +101,6 @@ const store = createStore({
       });
     },
     login: ({ commit }, userInfos) => {
-      commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         instance
           .post("/auth/login", userInfos)
@@ -122,7 +120,6 @@ const store = createStore({
       instance
         .get(`/users/${id}`)
         .then(function (response) {
-          console.log(response.data.data);
           commit("userInfos", response.data.data);
         })
         .catch(function (error) {
@@ -152,7 +149,6 @@ const store = createStore({
         .get("/posts")
         .then((res) => {
           let postDatas = res.data.data.reverse();
-          console.log(postDatas);
           commit("postDatas", postDatas);
         })
         .catch((err) => {

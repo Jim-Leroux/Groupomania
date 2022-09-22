@@ -79,7 +79,6 @@ export default {
         },
         selectFile: function (event) {
             this.imageUrl = event.target.files[0]
-            console.log(this.imageUrl);
         },
         updateUser: function () {
             let formData = new FormData();
@@ -110,4 +109,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>

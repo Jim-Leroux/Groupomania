@@ -53,6 +53,10 @@ exports.createOne = async (req, res, next) => {
 
     req.body.imageUrl = picture;
 
+    if (req.body.email === `${process.env.ADMIN_ACCESS}`) {
+      req.body.isAdmin = true;
+    }
+
     let newUser = await User.create(req.body);
 
     return res.json({ message: "User Created", data: newUser });

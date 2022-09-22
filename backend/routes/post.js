@@ -8,7 +8,7 @@ const express = require("express");
 let router = express.Router();
 
 // ROUTAGE DE LA RESSOURCE USER
-router.get("/", postCtrl.getAll);
+router.get("/", checkToken, postCtrl.getAll);
 
 router.get("/getLikes", checkToken, postCtrl.getLikes);
 
@@ -23,6 +23,6 @@ router.put(
 
 router.delete("/delete/:id", checkToken, postCtrl.deleteOne);
 
-router.post("/like", postCtrl.likeDislike);
+router.post("/like", checkToken, postCtrl.likeDislike);
 
 module.exports = router;
