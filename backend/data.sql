@@ -2,7 +2,7 @@ USE groupomania;
 
 INSERT INTO users (firstname, name, email, password, imageUrl, isAdmin, createdAt, updatedAt)
  VALUES
- ('I am', 'the Admin', 'admin@gmail.com', 'azerty', 'https://static.papergeek.fr/2017/03/x-men-patrick-stewart-role-professeur-xavier-condition.jpg', 1, '2022-09-19', '2022-09-19'),
+ ('Professeur', 'Xavier', 'xavier@gmail.com', 'azerty', 'https://static.papergeek.fr/2017/03/x-men-patrick-stewart-role-professeur-xavier-condition.jpg', 0, '2022-09-19', '2022-09-19'),
  ('Captain', 'America', 'captain@gmail.com', 'azerty', 'https://image.thanhnien.vn/1200x630/Uploaded/2022/wsxrxqeiod/2018_10_05/chris-evans_hnyp.jpg', 0, '2022-09-19', '2022-09-19'),
  ('Iron', 'Man', 'rambo@gmail.com', 'azerty', 'https://trendy.letudiant.fr/wp-content/uploads/trendy/2022/05/sans-titre35.jpeg', 0, '2022-09-19', '2022-09-19'),
  ('Thor', 'Fils DODIN', 'rambo@gmail.com', 'azerty', 'https://www.journaldugeek.com/content/uploads/2022/07/2-1.jpg', 0, '2022-09-19', '2022-09-19'),

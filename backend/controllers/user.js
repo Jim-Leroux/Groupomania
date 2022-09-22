@@ -57,9 +57,9 @@ exports.createOne = async (req, res, next) => {
       req.body.isAdmin = true;
     }
 
-    let newUser = await User.create(req.body);
+    await User.create(req.body);
 
-    return res.json({ message: "User Created", data: newUser });
+    return res.json({ message: "User Created" });
   } catch (error) {
     next(error);
   }

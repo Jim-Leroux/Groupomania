@@ -50,7 +50,7 @@ exports.createOne = async (req, res, next) => {
     const newPost = { user_id, description, imageUrl };
 
     await Post.create(newPost);
-    return res.json({ message: "Post Created", data: Post });
+    return res.json({ message: "Post Created" });
   } catch (error) {
     next(error);
   }
