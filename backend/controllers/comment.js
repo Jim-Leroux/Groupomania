@@ -17,7 +17,7 @@ exports.createOne = async (req, res, next) => {
     let newComment = { user_id, post_id, description };
 
     await Comment.create(newComment);
-    return res.json({ message: "Comment Created", data: Comment });
+    return res.status(201).json({ message: "Comment Created", data: Comment });
   } catch (error) {
     next(error);
   }
@@ -50,7 +50,7 @@ exports.updateOne = async (req, res, next) => {
 
     await Comment.update(newComment, { where: { id: commentId } });
 
-    return res.json({ message: "Comment Updated" });
+    return res.status(200).json({ message: "Comment Updated" });
   } catch (error) {
     next(error);
   }

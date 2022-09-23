@@ -20,7 +20,7 @@ exports.getOne = async (req, res, next) => {
       throw new UserError("This user does not exist !", 0);
     }
 
-    return res.json({ data: user });
+    return res.status(200).json({ data: user });
   } catch (error) {
     next(error);
   }
@@ -59,7 +59,7 @@ exports.createOne = async (req, res, next) => {
 
     await User.create(req.body);
 
-    return res.json({ message: "User Created" });
+    return res.status(201).json({ message: "User Created" });
   } catch (error) {
     next(error);
   }
@@ -126,7 +126,7 @@ exports.updateOne = async (req, res, next) => {
       await User.update(newUser, { where: { id: userId } });
     }
 
-    return res.json({ message: "User Updated" });
+    return res.status(200).json({ message: "User Updated" });
   } catch (error) {
     next(error);
   }

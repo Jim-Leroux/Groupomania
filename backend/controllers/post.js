@@ -25,7 +25,7 @@ exports.getAll = (req, res, next) => {
       },
     ],
   })
-    .then((posts) => res.json({ data: posts }))
+    .then((posts) => res.status(200).json({ data: posts }))
     .catch((error) => next(error));
 };
 
@@ -50,7 +50,7 @@ exports.createOne = async (req, res, next) => {
     const newPost = { user_id, description, imageUrl };
 
     await Post.create(newPost);
-    return res.json({ message: "Post Created" });
+    return res.status(201).json({ message: "Post Created" });
   } catch (error) {
     next(error);
   }
@@ -92,7 +92,7 @@ exports.updateOne = async (req, res, next) => {
 
     await Post.update(req.body, { where: { id: postId } });
 
-    return res.json({ message: "Post Updated" });
+    return res.status(200).json({ message: "Post Updated" });
   } catch (error) {
     next(error);
   }

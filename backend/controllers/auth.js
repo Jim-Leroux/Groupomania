@@ -29,7 +29,7 @@ exports.login = async (req, res, next) => {
       expiresIn: process.env.JWT_DURING,
     });
 
-    return res.json({ access_token: token, userId });
+    return res.status(200).json({ access_token: token, userId });
   } catch (error) {
     next(error);
   }
