@@ -144,6 +144,19 @@ const store = createStore({
           console.log(err);
         });
     },
+    deleteUser: ({ state }) => {
+      let id = state.user.userId;
+
+      instance
+        .delete(`/users/${id}`)
+        .then((res) => {
+          console.log(res);
+          localStorage.removeItem("user");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     getPosts: ({ commit }) => {
       instance
         .get("/posts")

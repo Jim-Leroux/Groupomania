@@ -21,4 +21,6 @@ router.post(
   userCtrl.updateOne
 );
 
+router.delete("/:id", checkToken, userCtrl.deleteOne);
+
 module.exports = router;

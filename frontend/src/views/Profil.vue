@@ -19,6 +19,7 @@
 
             <button @click="updateUser()" :class="{ 'button--disabled': !validatedFields }">Modifier mon
                 profil</button>
+
         </div>
 
         <div v-else class="profil-card">
@@ -30,6 +31,8 @@
                 <button @click="switchToEdit()">Modifier</button>
 
             </div>
+            <button @click="deleteUser()">Se désinscrire</button>
+
         </div>
     </div>
 </template>
@@ -52,7 +55,7 @@ export default {
     mounted: function () {
         // REDIRECTION AU FORMULAIRE DE CONNEXION
         if (this.$store.state.user.userId == -1) {
-            this.$router.push("/");
+            this.$router.push("/login");
             return;
         }
         this.$store.dispatch("getUserInfos");
@@ -102,6 +105,16 @@ export default {
                 console.log("error");
                 console.log(error);
             }
+        },
+        deleteUser: function () {
+            this.$store.dispatch('deleteUser',).then((response) => {
+                console.log("User deleted");
+                this.$router.push("/");
+            }), (error) => {
+                console.log("error");
+                console.log(error);
+            }
+
         }
     },
     components: { Navbar }

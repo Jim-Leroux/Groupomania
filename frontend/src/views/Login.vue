@@ -65,7 +65,7 @@ export default {
     },
     mounted: function () {
         if (this.$store.state.user.userId != -1) {
-            this.$router.push("/profil");
+            this.$router.push("/");
             return;
         }
     },
@@ -116,7 +116,7 @@ export default {
             };
         },
         login: function () {
-            const self = this; // ACCÈS AU THIS DANS UN SOUS ÉLÉMENT
+            self = this;
             this.$store.dispatch("login", {
                 email: this.email,
                 password: this.password,

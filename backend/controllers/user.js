@@ -131,3 +131,37 @@ exports.updateOne = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.deleteOne = async (req, res, next) => {
+  try {
+    let userId = parseInt(req.params.id);
+
+    if (!userId) {
+      throw new RequestError("Missing parameter");
+    }
+
+    let user = await User.findOne({
+      where: { id: userId },
+      raw: true,
+    });
+
+    if (user === null) {
+      throw new UserError("This user does not exist !", 0);
+    }
+
+    if (req.auth.userId !== user.id) {
+      throw new RequestError("Unhautorized", 1);
+    }
+
+    const filename = user.imageUrl.split("/images/")[1];
+    fs.unlink(`images/${filename}`, (error) => {
+      if (error) throw error;
+    });
+
+    await User.destroy({ where: { id: userId }, force: true });
+
+    return res.status(204).json({});
+  } catch (error) {
+    next(error);
+  }
+};
